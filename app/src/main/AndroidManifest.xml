@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:name=".InjectorApplication"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Injector"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Injector"
+        tools:ignore="DataExtractionRules">
+
+        <!-- ★ Fix: tools:ignore="DataExtractionRules" を追加し、
+             「データを持たないアプリなので新しいバックアップ設定は不要」として警告を抑制 -->
+
+        <!-- 透明な中継用Activity -->
+        <activity
+            android:name=".ui.proxy.ClipboardProxyActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity="">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
+        <!-- クイック設定パネル用サービス -->
+        <service
+            android:name=".service.InjectorTileService"
+            android:icon="@drawable/ic_injector_tile"
+            android:label="Inject to BugMemo"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+    </application>
+
+    <!-- BugMemo への可視性設定 -->
+    <queries>
+        <package android:name="com.example.bugmemo" />
+    </queries>
+
+</manifest>
