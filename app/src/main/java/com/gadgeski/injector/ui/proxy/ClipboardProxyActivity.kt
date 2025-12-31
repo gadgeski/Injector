@@ -71,7 +71,8 @@ class ClipboardProxyActivity : ComponentActivity() {
     }
 
     private fun sendToBugMemo(data: ProcessedText) {
-        val bugMemoPackage = "com.example.bugmemo"
+        // ★ Updated: 連携先アプリのパッケージ名変更に合わせて修正
+        val bugMemoPackage = "com.gadgeski.bugmemo"
 
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
