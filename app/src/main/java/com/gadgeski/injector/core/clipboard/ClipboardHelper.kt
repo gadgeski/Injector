@@ -1,4 +1,4 @@
-package com.example.injector.core.clipboard
+package com.gadgeski.injector.core.clipboard
 
 import android.content.ClipboardManager
 import android.content.Context

@@ -1,4 +1,4 @@
-package com.example.injector
+package com.gadgeski.injector
 
 import org.junit.Test
 

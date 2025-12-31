@@ -46,7 +46,7 @@
 
     <!-- BugMemo への可視性設定 -->
     <queries>
-        <package android:name="com.example.bugmemo" />
+        <package android:name="com.gadgeski.bugmemo" />
     </queries>
 
 </manifest>

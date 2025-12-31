@@ -1,4 +1,4 @@
-package com.example.injector.ui.theme
+package com.gadgeski.injector.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

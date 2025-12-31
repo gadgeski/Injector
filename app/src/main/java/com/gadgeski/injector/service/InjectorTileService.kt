@@ -1,10 +1,10 @@
-package com.example.injector.service
+package com.gadgeski.injector.service
 
 import android.app.PendingIntent
 import android.content.Intent
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import com.example.injector.ui.proxy.ClipboardProxyActivity
+import com.gadgeski.injector.ui.proxy.ClipboardProxyActivity
 
 class InjectorTileService : TileService() {
 

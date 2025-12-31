@@ -1,12 +1,12 @@
-package com.example.injector.ui.proxy
+package com.gadgeski.injector.ui.proxy
 
-import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import com.example.injector.domain.ProcessedText
-import com.example.injector.domain.TextProcessor
+import com.gadgeski.injector.core.clipboard.ClipboardHelper
+import com.gadgeski.injector.domain.ProcessedText
+import com.gadgeski.injector.domain.TextProcessor
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -14,12 +14,15 @@ import javax.inject.Inject
  * クリップボード読み取り用プロキシActivity
  * 画面には表示されない（透明）が、フォアグラウンド判定を得るために存在する
  */
-@AndroidEntryPoint // ★ Added: Hiltを使うために追加
+@AndroidEntryPoint
 class ClipboardProxyActivity : ComponentActivity() {
 
-    // ★ Added: テキスト加工ロジックを注入
     @Inject
     lateinit var textProcessor: TextProcessor
+
+    // ★ Fix: ここで Inject することで、ClipboardHelper クラスの "Never used" 警告を解消します
+    @Inject
+    lateinit var clipboardHelper: ClipboardHelper
 
     // 処理済みフラグ（フォーカスイベントが複数回走った場合の重複防止）
     private var isProcessed = false
@@ -50,24 +53,18 @@ class ClipboardProxyActivity : ComponentActivity() {
     }
 
     private fun injectClipboardContent() {
-        // Context.CLIPBOARD_SERVICE -> CLIPBOARD_SERVICE
-        val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        // ★ Fix: Activity内で直接 ClipboardManager を取得するのをやめ、
+        // 専門家である ClipboardHelper に任せます。
+        // これにより、ClipboardHelper のメソッドが使用状態になり警告が消えます。
+        val text = clipboardHelper.getClipboardText()
 
-        // クリップボードが空、またはテキストでない場合
-        if (!clipboard.hasPrimaryClip() || clipboard.primaryClipDescription?.hasMimeType("text/*") == false) {
+        if (text.isNullOrBlank()) {
+            // クリップボードが空、またはテキストでない場合
             Toast.makeText(this, "Clipboard is empty or not text", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val item = clipboard.primaryClip?.getItemAt(0)
-        val text = item?.text?.toString()
-
-        if (text.isNullOrBlank()) {
-            Toast.makeText(this, "No text to inject", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // ★ Added: TextProcessor を使ってデータを加工（タイトル生成など）
+        // TextProcessor を使ってデータを加工（タイトル生成など）
         val processedData = textProcessor.process(text)
 
         sendToBugMemo(processedData)
@@ -78,9 +75,9 @@ class ClipboardProxyActivity : ComponentActivity() {
 
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            // ★ Changed: 加工済みの本文をセット
+            // 加工済みの本文をセット
             putExtra(Intent.EXTRA_TEXT, data.content)
-            // ★ Added: 自動生成されたタイトルもセット（BugMemo側が対応していれば使われる）
+            // 自動生成されたタイトルもセット（BugMemo側が対応していれば使われる）
             putExtra(Intent.EXTRA_SUBJECT, data.title)
 
             // BugMemoを明示的に指定して、Chooserを出さずに即転送

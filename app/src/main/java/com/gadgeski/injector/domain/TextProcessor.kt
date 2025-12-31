@@ -1,4 +1,4 @@
-package com.example.injector.domain
+package com.gadgeski.injector.domain
 
 import javax.inject.Inject
 

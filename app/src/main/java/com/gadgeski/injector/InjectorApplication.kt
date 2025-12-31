@@ -1,4 +1,4 @@
-package com.example.injector
+package com.gadgeski.injector
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

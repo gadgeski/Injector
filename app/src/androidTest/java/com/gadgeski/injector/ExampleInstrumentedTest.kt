@@ -1,4 +1,4 @@
-package com.example.injector
+package com.gadgeski.injector
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
